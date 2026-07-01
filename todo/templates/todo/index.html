@@ -5,49 +5,90 @@
   <head>
     <title>To Do Application</title>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="author" content="INIAD">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   </head>
 
-  <body>
-    <h1>Sample To Do Application</h1>
-    <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post">
-      {% csrf_token %}
-      <div>
-        <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title">
+  <body class="bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="{% url 'index' %}">ToDoApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'index' %}">ホーム</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      <div>
-        <label for="dueInput">Due at:</label><br>
-        <input id="dueInput" name="due_at" type="datetime-local">
-      </div>
-      <div>
-        <button type="submit">Submit</button>
-      </div>
-    </form>
-    <br>
+    </nav>
 
-    <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
-    </div>
+    <div class="container py-5">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+          <h1 class="h2">Sample To Do Application</h1>
+          <p class="mb-0 text-muted">タスクを登録して、一覧と詳細を確認できます。</p>
+        </div>
+        <div>
+          <a class="btn btn-outline-primary me-2" href="{% url 'index' %}?order=due">期限順</a>
+          <a class="btn btn-outline-secondary" href="{% url 'index' %}?order=post">投稿順</a>
+        </div>
+      </div>
 
-    {% for task in tasks %}
-    <div class="text">
-      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
-      <ul>
-        <li>Posted at: {{ task.posted_at }}</li>
-        {% if task.due_at %} 
-        <li>Due at: {{ task.due_at }}</li>
-        {% endif %}
-        {% if task.completed %} 
-        <li>Status: Completed</li>
-        {% else %}
-        <li>Status: Not Completed</li>
-        {% endif %}
-      </ul>
+      <div class="card mb-4">
+        <div class="card-body">
+          <h2 class="h5 card-title">新しいタスクを追加</h2>
+          <form action="{% url 'index' %}" method="post" class="row g-3">
+            {% csrf_token %}
+            <div class="col-12">
+              <label for="titleInput" class="form-label">Title</label>
+              <input id="titleInput" name="title" type="text" class="form-control" placeholder="Input title">
+            </div>
+            <div class="col-12">
+              <label for="dueInput" class="form-label">Due at</label>
+              <input id="dueInput" name="due_at" type="datetime-local" class="form-control">
+            </div>
+            <div class="col-12">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="row row-cols-1 g-3">
+        {% for task in tasks %}
+        <div class="col">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h3 class="h5">
+                <a class="text-decoration-none" href="{% url 'detail' task.id %}">{{ task.title }}</a>
+              </h3>
+              <ul class="list-unstyled mb-0">
+                <li><strong>Posted at:</strong> {{ task.posted_at }}</li>
+                {% if task.due_at %}
+                <li><strong>Due at:</strong> {{ task.due_at }}</li>
+                {% endif %}
+                {% if task.completed %}
+                <li><span class="badge bg-success">Completed</span></li>
+                {% else %}
+                <li><span class="badge bg-warning text-dark">Not Completed</span></li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+        </div>
+        {% empty %}
+        <div class="col">
+          <div class="alert alert-info mb-0">現在タスクはありません。フォームからタスクを追加してください。</div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
-    {% endfor %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>
 
 </html>
