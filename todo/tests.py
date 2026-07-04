@@ -72,6 +72,17 @@ class TodoViewTestCase(TestCase):
         self.assertEqual(response.templates[0].name, 'todo/index.html')
         self.assertEqual(len(response.context['tasks']), 1)
 
+    def test_index_post_without_due_at(self):
+        client = Client()
+        data = {'title': 'Test Task', 'due_at': ''}
+        response = client.post('/', data)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.templates[0].name, 'todo/index.html')
+        task = response.context['tasks'][0]
+        self.assertEqual(task.title, 'Test Task')
+        self.assertIsNone(task.due_at)
+
     def test_index_get_order_post(self):
         task1 = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
         task1.save()
@@ -116,3 +127,16 @@ class TodoViewTestCase(TestCase):
         response = client.get('/1/')
 
         self.assertEqual(response.status_code, 404)
+
+    def test_update_post_without_due_at(self):
+        task = Task(title='task1', due_at=timezone.make_aware(datetime(2024, 7, 1)))
+        task.save()
+
+        client = Client()
+        data = {'title': 'updated task', 'due_at': ''}
+        response = client.post('/{}/update'.format(task.pk), data)
+
+        self.assertEqual(response.status_code, 302)
+        task.refresh_from_db()
+        self.assertEqual(task.title, 'updated task')
+        self.assertIsNone(task.due_at)
