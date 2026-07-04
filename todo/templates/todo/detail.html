@@ -1,31 +1,32 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+{% extends 'todo/base.html' %}
 
-  <head>
-    <title>To Do Application</title>
-    <meta charset="UTF-8">
-    <meta name="author" content="INIAD">
-  </head>
+{% block title %}{{ task.title }} | To Do Application{% endblock %}
 
-  <body>
-    <h1>{{ task.title }}</h1>
-    <ul>
-      <li>Posted at: {{ task.posted_at }}</li>
-      {% if task.due_at %}
-      <li>Due at: {{ task.due_at }}</li>
-      {% endif %}
-      {% if task.completed %}
-      <li>Status: Completed</li>
-      {% else %}
-      <li>Status: Not Completed</li>
-      {% endif %}
-    </ul>
+{% block content %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-start mb-3">
+        <h1 class="h2 mb-0">{{ task.title }}</h1>
+        {% if task.completed %}
+          <span class="badge text-bg-success">Completed</span>
+        {% else %}
+          <span class="badge text-bg-warning">Not Completed</span>
+        {% endif %}
+      </div>
 
-    <div>
-      <a href="{% url 'index' %}">Top</a>
-      | <a href="{% url 'update' task.id %}">Edit</a>
+      <dl class="row mb-4">
+        <dt class="col-sm-3">Posted at</dt>
+        <dd class="col-sm-9">{{ task.posted_at }}</dd>
+        {% if task.due_at %}
+          <dt class="col-sm-3">Due at</dt>
+          <dd class="col-sm-9">{{ task.due_at }}</dd>
+        {% endif %}
+      </dl>
+
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="{% url 'index' %}">Top</a>
+        <a class="btn btn-primary" href="{% url 'update' task.id %}">Edit</a>
+      </div>
     </div>
-  </body>
-
-</html>
+  </div>
+{% endblock %}

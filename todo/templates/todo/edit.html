@@ -1,31 +1,28 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+{% extends 'todo/base.html' %}
 
-<head>
-  <title>To Do Application</title>
-  <meta charset="UTF-8">
-  <meta name="author" content="INIAD">
-</head>
+{% block title %}Edit task | To Do Application{% endblock %}
 
-<body>
-  <h1>Edit task</h1>
-  <p>You can edit tasks from the following form.</p>
-  <form action="{% url 'update' task.id%}" method="post">
-    {% csrf_token %}
-    <div>
-      <label for="titleInput">Title</label><br>
-      <input id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
+{% block content %}
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h1 class="h2 mb-1">Edit task</h1>
+      <p class="text-secondary">You can edit tasks from the following form.</p>
+
+      <form action="{% url 'update' task.id %}" method="post" class="row g-3">
+        {% csrf_token %}
+        <div class="col-12">
+          <label for="titleInput" class="form-label">Title</label>
+          <input id="titleInput" name="title" type="text" class="form-control" placeholder="Input title" value="{{ task.title }}" required>
+        </div>
+        <div class="col-12">
+          <label for="dueInput" class="form-label">Due at</label>
+          <input id="dueInput" name="due_at" type="datetime-local" class="form-control" value="{{ task.due_at|date:'Y-m-d\\TH:i' }}">
+        </div>
+        <div class="col-12 d-flex gap-2">
+          <a class="btn btn-outline-secondary" href="{% url 'detail' task.id %}">Cancel</a>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
     </div>
-    <div>
-      <label for="dueInput">Due at:</label><br>
-      <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at | date:'Y-m-d H:i' }}">
-    </div>
-    <div>
-      <button type="submit">Submit</button>
-    </div>S
-  </form>
-  <br>
-</body>
-
-</html>
+  </div>
+{% endblock %}

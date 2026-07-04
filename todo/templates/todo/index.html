@@ -1,53 +1,71 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+{% extends 'todo/base.html' %}
 
-  <head>
-    <title>To Do Application</title>
-    <meta charset="UTF-8">
-    <meta name="author" content="INIAD">
-  </head>
-
-  <body>
-    <h1>Sample To Do Application</h1>
-    <p>You can submit tasks from the following form.</p>
-    <form action="{% url 'index' %}" method="post">
-      {% csrf_token %}
-      <div>
-        <label for="titleInput">Title</label><br>
-        <input id="titleInput" name="title" type="text" placeholder="Input title">
-      </div>
-      <div>
-        <label for="dueInput">Due at:</label><br>
-        <input id="dueInput" name="due_at" type="datetime-local">
-      </div>
-      <div>
-        <button type="submit">Submit</button>
-      </div>
-    </form>
-    <br>
-
+{% block content %}
+  <div class="d-flex flex-column flex-md-row justify-content-between gap-3 align-items-md-end mb-4">
     <div>
-      <a href="{% url 'index' %}?order=due">Sort by Due Date</a> |
-      <a href="{% url 'index' %}?order=post">Sort by Posted Date</a>
+      <h1 class="h2 mb-1">Sample To Do Application</h1>
+      <p class="text-secondary mb-0">You can submit tasks from the following form.</p>
     </div>
+    <div class="btn-group" role="group" aria-label="Sort tasks">
+      <a class="btn btn-outline-primary {% if request.GET.order == 'due' %}active{% endif %}" href="{% url 'index' %}?order=due">Due Date</a>
+      <a class="btn btn-outline-primary {% if request.GET.order != 'due' %}active{% endif %}" href="{% url 'index' %}?order=post">Posted Date</a>
+    </div>
+  </div>
 
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <h2 class="h5 card-title mb-3">New Task</h2>
+      <form action="{% url 'index' %}" method="post" class="row g-3">
+        {% csrf_token %}
+        <div class="col-12 col-md-6">
+          <label for="titleInput" class="form-label">Title</label>
+          <input id="titleInput" name="title" type="text" class="form-control" placeholder="Input title" required>
+        </div>
+        <div class="col-12 col-md-4">
+          <label for="dueInput" class="form-label">Due at</label>
+          <input id="dueInput" name="due_at" type="datetime-local" class="form-control">
+        </div>
+        <div class="col-12 col-md-2 d-grid align-self-end">
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="row g-3">
     {% for task in tasks %}
-    <div class="text">
-      <h2><a href="{% url 'detail' task.id %}">{{ task.title }}</a></h2>
-      <ul>
-        <li>Posted at: {{ task.posted_at }}</li>
-        {% if task.due_at %} 
-        <li>Due at: {{ task.due_at }}</li>
-        {% endif %}
-        {% if task.completed %} 
-        <li>Status: Completed</li>
-        {% else %}
-        <li>Status: Not Completed</li>
-        {% endif %}
-      </ul>
-    </div>
+      <div class="col-12">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="d-flex flex-column flex-md-row justify-content-between gap-3">
+              <div>
+                <h2 class="h5 mb-2">
+                  <a class="text-decoration-none" href="{% url 'detail' task.id %}">{{ task.title }}</a>
+                </h2>
+                <dl class="row mb-0 text-secondary">
+                  <dt class="col-sm-3">Posted at</dt>
+                  <dd class="col-sm-9">{{ task.posted_at }}</dd>
+                  {% if task.due_at %}
+                    <dt class="col-sm-3">Due at</dt>
+                    <dd class="col-sm-9">{{ task.due_at }}</dd>
+                  {% endif %}
+                </dl>
+              </div>
+              <div>
+                {% if task.completed %}
+                  <span class="badge text-bg-success">Completed</span>
+                {% else %}
+                  <span class="badge text-bg-warning">Not Completed</span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% empty %}
+      <div class="col-12">
+        <div class="alert alert-info mb-0">No tasks yet.</div>
+      </div>
     {% endfor %}
-  </body>
-
-</html>
+  </div>
+{% endblock %}
