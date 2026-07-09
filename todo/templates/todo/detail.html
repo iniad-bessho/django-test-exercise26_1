@@ -1,31 +1,30 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+{% extends 'todo/base.html' %}
 
-  <head>
-    <title>To Do Application</title>
-    <meta charset="UTF-8">
-    <meta name="author" content="INIAD">
-  </head>
+{% block title %}{{ task.title }} - To Do Application{% endblock %}
 
-  <body>
-    <h1>{{ task.title }}</h1>
-    <ul>
-      <li>Posted at: {{ task.posted_at }}</li>
-      {% if task.due_at %}
-      <li>Due at: {{ task.due_at }}</li>
-      {% endif %}
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <div class="d-flex align-items-start justify-content-between gap-3">
+      <h1 class="h3 card-title mb-3">{{ task.title }}</h1>
       {% if task.completed %}
-      <li>Status: Completed</li>
+      <span class="badge text-bg-success">Completed</span>
       {% else %}
-      <li>Status: Not Completed</li>
+      <span class="badge text-bg-secondary">Not Completed</span>
+      {% endif %}
+    </div>
+
+    <ul class="list-group list-group-flush mb-4">
+      <li class="list-group-item px-0">Posted at: {{ task.posted_at }}</li>
+      {% if task.due_at %}
+      <li class="list-group-item px-0">Due at: {{ task.due_at }}</li>
       {% endif %}
     </ul>
 
-    <div>
-      <a href="{% url 'index' %}">Top</a>
-      | <a href="{% url 'update' task.id %}">Edit</a>
+    <div class="d-flex gap-2">
+      <a class="btn btn-outline-secondary" href="{% url 'index' %}">Top</a>
+      <a class="btn btn-primary" href="{% url 'update' task.id %}">Edit</a>
     </div>
-  </body>
-
-</html>
+  </div>
+</div>
+{% endblock %}
