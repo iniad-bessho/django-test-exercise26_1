@@ -1,31 +1,28 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="ja">
+{% extends 'todo/base.html' %}
 
-<head>
-  <title>To Do Application</title>
-  <meta charset="UTF-8">
-  <meta name="author" content="INIAD">
-</head>
+{% block title %}Edit task - To Do Application{% endblock %}
 
-<body>
-  <h1>Edit task</h1>
-  <p>You can edit tasks from the following form.</p>
-  <form action="{% url 'update' task.id%}" method="post">
-    {% csrf_token %}
-    <div>
-      <label for="titleInput">Title</label><br>
-      <input id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
-    </div>
-    <div>
-      <label for="dueInput">Due at:</label><br>
-      <input id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at | date:'Y-m-d H:i' }}">
-    </div>
-    <div>
-      <button type="submit">Submit</button>
-    </div>S
-  </form>
-  <br>
-</body>
+{% block content %}
+<div class="card shadow-sm">
+  <div class="card-body">
+    <h1 class="h3 card-title mb-2">Edit task</h1>
+    <p class="text-muted">You can edit tasks from the following form.</p>
 
-</html>
+    <form action="{% url 'update' task.id%}" method="post">
+      {% csrf_token %}
+      <div class="mb-3">
+        <label class="form-label" for="titleInput">Title</label>
+        <input class="form-control" id="titleInput" name="title" type="text" placeholder="Input title" value="{{ task.title }}">
+      </div>
+      <div class="mb-3">
+        <label class="form-label" for="dueInput">Due at:</label>
+        <input class="form-control" id="dueInput" name="due_at" type="datetime-local" value="{{ task.due_at | date:'Y-m-d\\TH:i' }}">
+      </div>
+      <div class="d-flex gap-2">
+        <a class="btn btn-outline-secondary" href="{% url 'detail' task.id %}">Cancel</a>
+        <button class="btn btn-primary" type="submit">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
